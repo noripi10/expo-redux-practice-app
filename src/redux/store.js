@@ -1,11 +1,7 @@
 import { createStore } from 'redux';
 import { reducers } from './reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import {
-	persistStore,
-	persistReducer,
-	persistCombineReducers,
-} from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
 
 // whitelist or blacklist
