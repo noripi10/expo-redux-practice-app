@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+// Hooks
 import { useDispatch, useSelector } from 'react-redux';
 import { actionIncrement, actionDecrement } from '../redux/action';
 
@@ -8,11 +9,11 @@ export const Counter = () => {
 	const dispatch = useDispatch();
 	// state(store)のreducerごとに登録したツリー構造から抜粋
 	const counter = useSelector((state) => state.counter);
-	const { count } = counter;
+	const { preCount, curCount } = counter;
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.count}>{count}</Text>
+			<Text style={styles.curCount}>{curCount}</Text>
 			<View style={styles.buttonContainer}>
 				<TouchableOpacity
 					onPress={() => dispatch(actionDecrement())} //actionを作成してstoreへdispatch
@@ -27,6 +28,7 @@ export const Counter = () => {
 					<Text>プラス</Text>
 				</TouchableOpacity>
 			</View>
+			<Text style={styles.preCount}>{preCount}</Text>
 		</View>
 	);
 };
@@ -41,8 +43,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	count: {
+	curCount: {
 		fontSize: 80,
+	},
+	preCount: {
+		fontSize: 45,
 	},
 	button: {
 		justifyContent: 'center',

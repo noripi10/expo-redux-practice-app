@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Button, Text } from 'react-native';
+import { connect } from 'react-redux';
 
 import { Counter } from '../component/Counter';
+import { actionIncrement } from '../redux/action';
 
-export const CounterScreen = ({}) => {
+const CounterScreen = (props) => {
 	return (
 		<View style={styles.container}>
+			<Button
+				title="親コンポーネント　+ボタン"
+				onPress={() => props.dispatch(actionIncrement())}
+			/>
+
+			<Text>この下から子コンポーネント</Text>
 			<Counter />
 		</View>
 	);
@@ -18,3 +26,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 });
+
+const mapStateToProps = (state) => {
+	const { counter } = state;
+	return { counter };
+};
+
+export default connect(mapStateToProps)(CounterScreen);

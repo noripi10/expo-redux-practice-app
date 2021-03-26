@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { CounterScreen } from './src/screen/CounterScreen';
+import { CounterScreen } from './src/screen';
 import { Provider } from 'react-redux';
 import store, { persister } from './src/redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
