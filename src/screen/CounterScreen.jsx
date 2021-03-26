@@ -3,7 +3,7 @@ import { View, StyleSheet, Button, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import { Counter } from '../component/Counter';
-import { actionIncrement } from '../redux/action';
+import { actionDecrement, actionIncrement } from '../redux/action';
 
 const CounterScreen = (props) => {
 	return (
@@ -11,6 +11,10 @@ const CounterScreen = (props) => {
 			<Button
 				title="親コンポーネント　+ボタン"
 				onPress={() => props.dispatch(actionIncrement())}
+			/>
+			<Button
+				title="親コンポーネント　-ボタン"
+				onPress={() => props.dispatch(actionDecrement())}
 			/>
 
 			<Text>この下から子コンポーネント</Text>

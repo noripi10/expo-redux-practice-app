@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { counterReducer } from './reducers/count';
+import { counterReducer } from './reducers/counter';
 
 // reducerは1つに集約する
 // storeは、combineしたkeyごとにcollection（ツリー構造）化される
