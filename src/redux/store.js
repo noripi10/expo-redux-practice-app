@@ -6,9 +6,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 // whitelist or blacklist
 const persistConfig = {
-	key: 'root',
-	storage: AsyncStorage,
-	whiteList: ['counter'],
+  key: 'root',
+  storage: AsyncStorage,
+  whiteList: ['counter', 'todoList'],
 };
 
 // persistReducerでラップしてあげることで永続化する
