@@ -1,6 +1,8 @@
 import React from 'react';
+import { useRef } from 'react';
 import { useState } from 'react';
 import {
+  Animated,
   View,
   StyleSheet,
   Text,
@@ -8,11 +10,24 @@ import {
   Dimensions,
   TouchableOpacity,
   FlatList,
+  InteractionManager,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { actionAddTodo, actionResetTodo } from '../redux/action';
+import { bindActionCreators } from 'redux';
+import {
+  actionAddTodo,
+  actionDeleteTodo,
+  actionResetTodo,
+} from '../redux/action';
+import { RenderItem } from '../component/RenderItem';
 
-const ToDoListScreen = ({ todoList, dispatch }) => {
+const ToDoListScreen = ({
+  todoList,
+  actionAddTodo,
+  actionDeleteTodo,
+  actionResetTodo,
+}) => {
+  const animation = useRef(new Animated.Value(0)).current;
   const [todoText, setTodoText] = useState('');
   return (
     <View style={styles.container}>
@@ -28,31 +43,73 @@ const ToDoListScreen = ({ todoList, dispatch }) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            dispatch(
-              actionAddTodo({ ID: Math.random().toString(), todo: todoText })
-            );
+            actionAddTodo({ ID: Math.random().toString(), todo: todoText });
             setTodoText('');
           }}
         >
-          <Text>追加</Text>
+          <Text>Add</Text>
         </TouchableOpacity>
         {/* <Button title="reset" onPress={() => dispatch(actionResetTodo())} /> */}
       </View>
       <View style={styles.inCompleteContainer}>
         <FlatList
           data={todoList.inComplete || []}
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.renderItemContainer}>
-                <Text>{item.todo}</Text>
-              </View>
-            );
-          }}
+          renderItem={({ item }) => (
+            <RenderItem item={item} deleteTodo={actionDeleteTodo} />
+          )}
           keyExtractor={(item) => item.ID}
           ItemSeparatorComponent={() => <View style={styles.divider} />}
         />
       </View>
       <View style={styles.completeContainer}></View>
+      <Animated.View
+        style={[
+          styles.resetButtonContainer,
+          {
+            width: animation.interpolate({
+              inputRange: [0, 0.5, 1],
+              outputRange: [70, 100, 70],
+              extrapolate: 'clamp',
+            }),
+            height: animation.interpolate({
+              inputRange: [0, 0.5, 1],
+              outputRange: [70, 100, 70],
+              extrapolate: 'clamp',
+            }),
+            borderRadius: animation.interpolate({
+              inputRange: [0, 0.5, 1],
+              outputRange: [35, 50, 35],
+            }),
+          },
+        ]}
+      >
+        <TouchableOpacity
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          onPress={() => {
+            animation.setValue(0);
+            Animated.timing(animation, {
+              toValue: 1,
+              duration: 1000,
+              useNativeDriver: false,
+            }).start();
+            InteractionManager.runAfterInteractions(() => {
+              actionResetTodo();
+            });
+          }}
+        >
+          <Animated.Text
+            style={{
+              color: animation.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: ['#000', 'red', '#000'],
+                extrapolate: 'clamp',
+              }),
+            }}
+          >
+            Reset
+          </Animated.Text>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
@@ -85,6 +142,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     margin: 5,
     padding: 16,
+    width: 70,
+    height: 50,
     // alignSelf: 'flex-end',
   },
   inCompleteContainer: {
@@ -104,10 +163,29 @@ const styles = StyleSheet.create({
     height: 0.5,
     backgroundColor: '#000',
   },
+  resetButtonContainer: {
+    position: 'absolute',
+    right: 24,
+    bottom: 24,
+    width: 70,
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#e3e3e3',
+    borderRadius: 35,
+    margin: 5,
+  },
 });
 
 const mapStateToProps = (state) => {
   const { todoList } = state;
   return { todoList };
 };
-export default connect(mapStateToProps)(ToDoListScreen);
+
+const mapActionToProps = (dispatch) => {
+  return bindActionCreators(
+    { actionAddTodo, actionDeleteTodo, actionResetTodo },
+    dispatch
+  );
+};
+export default connect(mapStateToProps, mapActionToProps)(ToDoListScreen);

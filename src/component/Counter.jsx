@@ -9,8 +9,6 @@ export const Counter = () => {
   const dispatch = useDispatch();
   // state(store)のreducerごとに登録したツリー構造から抜粋
   const counter = useSelector((state) => state.counter);
-  const todoList = useSelector((state) => state.todoList);
-  console.log({ todoList });
   const { preCount, curCount } = counter;
 
   return (
