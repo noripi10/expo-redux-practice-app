@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import StackNavigator from '../navigation/StackNavigator';
+import AuthStackNavigator from './AuthStackNavigator';
+import MainStackNavigator from '../navigation/MainStackNavigator';
 import { AppContext } from '../context/AppContext';
 
 const Router = () => {
-  const { user, setUser } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   return (
     <NavigationContainer>
-      <StackNavigator />
+      {user.uid ? <MainStackNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
 };

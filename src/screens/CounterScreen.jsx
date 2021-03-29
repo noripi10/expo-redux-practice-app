@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actionDecrement, actionIncrement, actionReset } from '../redux/action';
 import { Counter } from '../component/Counter';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 
 const CounterScreen = (props) => {
   const {
@@ -13,6 +15,17 @@ const CounterScreen = (props) => {
     counter,
     navigation,
   } = props;
+
+  const { setUser } = useContext(AppContext);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'カウンター',
+      headerRight: () => (
+        <Button title="サインアウト" onPress={() => setUser({})} />
+      ),
+    });
+  }, []);
 
   useEffect(() => {
     const { curCount } = counter;
