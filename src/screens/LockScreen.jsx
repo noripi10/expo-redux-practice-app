@@ -1,35 +1,26 @@
 import React from 'react';
-import { useEffect } from 'react';
 import { View, StyleSheet, Text, Button } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
-const SignInScreen = (props) => {
-  const { user, setUser } = useContext(AppContext);
+export const LockScreen = ({}) => {
+  const { setFocus } = useContext(AppContext);
 
-  const { navigation } = props;
-
-  const authHandler = async () => {
+  const releaseHandler = async () => {
     const { success } = await LocalAuthentication.authenticateAsync();
     console.log({ success });
     if (success) {
-      setUser((user) => ({ ...user, uid: Math.random().toString() }));
+      setFocus(true);
     }
   };
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'サインイン',
-    });
-
-    authHandler();
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>SignInScreen</Text>
-      <Button title="サインイン" onPress={authHandler} />
+      <View>
+        <Text>LockScreen</Text>
+        <Button title="ロック解除" onPress={() => releaseHandler()} />
+      </View>
     </View>
   );
 };
@@ -41,5 +32,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-export default SignInScreen;

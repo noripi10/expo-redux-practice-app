@@ -1,14 +1,25 @@
 import React, { useContext } from 'react';
+import { AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthStackNavigator from './AuthStackNavigator';
 import MainStackNavigator from '../navigation/MainStackNavigator';
 import { AppContext } from '../context/AppContext';
+import { useEffect } from 'react';
+import { LockScreen } from '../screens/LockScreen';
 
 const Router = () => {
-  const { user } = useContext(AppContext);
+  const { isFocus, user } = useContext(AppContext);
   return (
     <NavigationContainer>
-      {user.uid ? <MainStackNavigator /> : <AuthStackNavigator />}
+      {isFocus ? (
+        user.uid ? (
+          <MainStackNavigator />
+        ) : (
+          <AuthStackNavigator />
+        )
+      ) : (
+        <LockScreen />
+      )}
     </NavigationContainer>
   );
 };
