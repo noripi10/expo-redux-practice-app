@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { View, StyleSheet, Button, Text, TouchableOpacity } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actionDecrement, actionIncrement, actionReset } from '../redux/action';
 import { Counter } from '../component/Counter';
-import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import { useNavigation } from '@react-navigation/core';
 
 const CounterScreen = (props) => {
   const {
@@ -16,7 +16,7 @@ const CounterScreen = (props) => {
     navigation,
   } = props;
 
-  const { setUser } = useContext(AppContext);
+  const { isLock, setUser } = useContext(AppContext);
 
   useEffect(() => {
     navigation.setOptions({
@@ -26,6 +26,12 @@ const CounterScreen = (props) => {
       ),
     });
   }, []);
+
+  useEffect(() => {
+    if (isLock === true) {
+      navigation.navigate('lock');
+    }
+  }, [isLock]);
 
   useEffect(() => {
     const { curCount } = counter;

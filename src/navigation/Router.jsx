@@ -1,27 +1,20 @@
 import React, { useContext } from 'react';
-import { AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import AuthStackNavigator from './AuthStackNavigator';
 import MainStackNavigator from '../navigation/MainStackNavigator';
+import AuthStackNavigator from './AuthStackNavigator';
+import { LockScreen } from '../screens';
 import { AppContext } from '../context/AppContext';
-import { useEffect } from 'react';
-import { LockScreen } from '../screens/LockScreen';
 
 const Router = () => {
   const { isFocus, user } = useContext(AppContext);
-  return (
-    <NavigationContainer>
-      {isFocus ? (
-        user.uid ? (
-          <MainStackNavigator />
-        ) : (
-          <AuthStackNavigator />
-        )
-      ) : (
-        <LockScreen />
-      )}
-    </NavigationContainer>
-  );
+  const selectedScreen = () => {
+    if (user.uid) {
+      return <MainStackNavigator />;
+    } else {
+      return <AuthStackNavigator />;
+    }
+  };
+  return <NavigationContainer>{selectedScreen()}</NavigationContainer>;
 };
 
 export default Router;

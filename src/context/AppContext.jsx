@@ -1,19 +1,22 @@
 import React, { useState, createContext, useEffect } from 'react';
+import { useRef } from 'react';
 import { AppState } from 'react-native';
 
 export const AppContext = createContext();
 
 export const AppProvider = (props) => {
-  const [user, setUser] = useState({
-    uid: '',
-    userName: '',
-  });
-  const [isFocus, setFocus] = useState(true);
+  const appState = useRef(AppState.currentState);
 
-  const stateChangeHandler = (state) => {
-    if (state.match('inactive|background')) {
-      setFocus(false);
+  const [user, setUser] = useState({});
+  const [isLock, setLock] = useState(true);
+
+  const stateChangeHandler = (nextState) => {
+    // console.log({ nextState });
+    // console.log(appState.current);
+    if (appState.current.match(/background/) && nextState === 'active') {
+      setLock(true);
     }
+    appState.current = nextState;
   };
 
   useEffect(() => {
@@ -25,7 +28,7 @@ export const AppProvider = (props) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ user, setUser, isFocus, setFocus }}>
+    <AppContext.Provider value={{ user, setUser, isLock, setLock }}>
       {props.children}
     </AppContext.Provider>
   );

@@ -1,29 +1,22 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { View, StyleSheet, Text, Button } from 'react-native';
-import * as LocalAuthentication from 'expo-local-authentication';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
 const SignInScreen = (props) => {
-  const { user, setUser } = useContext(AppContext);
+  const { setUser } = useContext(AppContext);
 
   const { navigation } = props;
 
   const authHandler = async () => {
-    const { success } = await LocalAuthentication.authenticateAsync();
-    console.log({ success });
-    if (success) {
-      setUser((user) => ({ ...user, uid: Math.random().toString() }));
-    }
+    setUser((user) => ({ ...user, uid: Math.random().toString() }));
   };
 
   useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'サインイン',
-    });
-
-    authHandler();
+    // navigation.setOptions({
+    //   headerTitle: 'サインイン',
+    // });
   }, []);
 
   return (

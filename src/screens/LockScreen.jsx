@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Text, Button } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import { useNavigation } from '@react-navigation/core';
 
-export const LockScreen = ({}) => {
-  const { setFocus } = useContext(AppContext);
+const LockScreen = () => {
+  const { isLock, setLock } = useContext(AppContext);
+  const navigation = useNavigation();
 
   const releaseHandler = async () => {
-    const { success } = await LocalAuthentication.authenticateAsync();
-    console.log({ success });
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    if (!hasHardware) {
+      setLock(true);
+      alert('生体認証が設定されていない為ロックを解除しました');
+      return;
+    }
+    const { success, error } = await LocalAuthentication.authenticateAsync();
+    if (error) {
+      alert(error);
+    }
     if (success) {
-      setFocus(true);
+      setLock(false);
     }
   };
+
+  useEffect(() => {
+    if (!isLock) {
+      navigation.goBack();
+    }
+  }, [isLock]);
 
   return (
     <View style={styles.container}>
@@ -32,3 +48,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default LockScreen;
