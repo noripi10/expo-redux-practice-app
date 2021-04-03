@@ -1,11 +1,21 @@
 import React, { useEffect, useContext } from 'react';
-import { View, StyleSheet, Button, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Button,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  useWindowDimensions,
+} from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actionDecrement, actionIncrement, actionReset } from '../redux/action';
 import { Counter } from '../component/Counter';
 import { AppContext } from '../context/AppContext';
-import { useNavigation } from '@react-navigation/core';
+import { useState } from 'react';
+
+const window = Dimensions.get('window');
 
 const CounterScreen = (props) => {
   const {
@@ -16,7 +26,13 @@ const CounterScreen = (props) => {
     navigation,
   } = props;
 
+  const [dimensions, setDimensions] = useState({ ...window });
   const { isLock, setUser } = useContext(AppContext);
+  const { width, height } = useWindowDimensions();
+
+  const dimensionChangeHandler = ({ window }) => {
+    setDimensions({ ...window });
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -25,6 +41,12 @@ const CounterScreen = (props) => {
         <Button title="サインアウト" onPress={() => setUser({})} />
       ),
     });
+
+    Dimensions.addEventListener('change', dimensionChangeHandler);
+
+    return () => {
+      Dimensions.removeEventListener('change', dimensionChangeHandler);
+    };
   }, []);
 
   useEffect(() => {
@@ -64,6 +86,11 @@ const CounterScreen = (props) => {
       >
         <Text>TodoListScreen</Text>
       </TouchableOpacity>
+
+      <Text>useWindowDimensions</Text>
+      <Text>{`W:${width} H:${height}`}</Text>
+      <Text>Dimensions API</Text>
+      <Text>{`W:${dimensions.width} H:${dimensions.height}`}</Text>
     </View>
   );
 };
